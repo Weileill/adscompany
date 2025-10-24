@@ -2,48 +2,53 @@ document.addEventListener('DOMContentLoaded', function () {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isTouch = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window);
 
-  // ---------- ENTRY OVERLAY ----------
+  // ---------- ENTRY OVERLAY (保留，如果你有 overlay ) ----------
   const overlay = document.getElementById('entryOverlay');
-  // show overlay briefly, then animate out
   if (overlay && !prefersReduced) {
-    // keep overlay for ~700ms then hide (so user definitely notices)
     setTimeout(() => {
       overlay.classList.add('hidden');
-      // remove from DOM after transition to free paint
-      setTimeout(() => overlay.remove(), 900);
-    }, 680);
+      setTimeout(() => { if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 900);
+    }, 600);
   } else if (overlay) {
     overlay.remove();
   }
 
-  // ---------- STAGGERED ENTRANCE ----------
+  // ---------- UNIFIED STAGGER FOR ALL data-anim ELEMENTS ----------
   const body = document.body;
   const animEls = Array.from(document.querySelectorAll('[data-anim]'))
-    .sort((a,b) => Number(a.getAttribute('data-anim')) - Number(b.getAttribute('data-anim')));
+    .sort((a, b) => Number(a.getAttribute('data-anim')) - Number(b.getAttribute('data-anim')));
 
   if (prefersReduced) {
-    // show immediately if reduced motion
-    animEls.forEach(el => { el.style.opacity = '1'; el.style.transform = 'none'; });
+    // show immediately
+    animEls.forEach(el => {
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
     body.classList.add('is-loaded');
   } else {
-    // set CSS variable --delay stagger for each element (stronger spacing)
+    // Choose base delay step (shorter on touch devices)
+    const baseStep = isTouch ? 45 : 95; // ms per element
     animEls.forEach((el, i) => {
-      const base = isTouch ? 40 : 110; // ms
-      const delay = i * base;
-      el.style.setProperty('--delay', `${delay}ms`);
+      const delay = i * baseStep;
+      el.style.setProperty('--anim-delay', `${delay}ms`);
     });
-    // small delay before adding class so overlay finishes
+
+    // Wait a little for overlay to disappear (if present) then mark loaded
+    const startupDelay = overlay && !prefersReduced ? 320 : 80;
     setTimeout(() => {
       body.classList.add('is-loaded');
-      // add hero bounce class after a slightly longer time for emphasis
+
+      // Trigger heroCard extra bounce AFTER main load so it stands out
       const heroCard = document.getElementById('heroCard');
       if (heroCard) {
-        setTimeout(() => heroCard.classList.add('body-animated'), 240);
+        setTimeout(() => {
+          heroCard.classList.add('body-animated');
+        }, 240);
       }
-    }, 220);
+    }, startupDelay);
   }
 
-  // ---------- LAZY-PLAY VIDEOS ----------
+  // ---------- LAZY-PLAY VIDEOS: unchanged but safe ----------
   document.querySelectorAll('.video-card').forEach(card => {
     card.addEventListener('click', function (e) {
       e.preventDefault();
@@ -67,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // ---------- HERO PARALLAX (desktop only) ----------
+  // ---------- HERO PARALLAX (desktop only, keep but non-blocking) ----------
   const hero = document.getElementById('hero');
   const heroCard = document.getElementById('heroCard');
   if (hero && heroCard && !isTouch && !prefersReduced) {
@@ -75,19 +80,21 @@ document.addEventListener('DOMContentLoaded', function () {
       const rect = hero.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width - 0.5;
       const y = (e.clientY - rect.top) / rect.height - 0.5;
-      const tx = x * 10;
-      const ty = y * 10;
-      const rz = x * 2.6;
+      const tx = x * 8;
+      const ty = y * 8;
+      const rz = x * 3;
       heroCard.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotateZ(${rz}deg)`;
-      heroCard.style.boxShadow = `0 ${18 - Math.abs(ty)}px ${40 - Math.abs(ty)}px rgba(11,15,30,0.12)`;
+      heroCard.style.boxShadow = `0 ${12 - Math.abs(ty)}px ${30 - Math.abs(ty)}px rgba(11,15,30,0.09)`;
     });
-    hero.addEventListener('mouseleave', () => { heroCard.style.transform = ''; heroCard.style.boxShadow = ''; });
+    hero.addEventListener('mouseleave', () => {
+      heroCard.style.transform = '';
+      heroCard.style.boxShadow = '';
+    });
   } else if (heroCard) {
     heroCard.style.willChange = 'auto';
   }
 
   // Footer year
-  const y = new Date().getFullYear();
   const yearEl = document.getElementById('year');
-  if (yearEl) yearEl.textContent = y;
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 });

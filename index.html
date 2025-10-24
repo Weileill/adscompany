@@ -59,7 +59,13 @@
         <div class="card glass floating" id="heroCard" data-anim="8" aria-hidden="true">
           <div class="orb orb-1"></div>
           <div class="orb orb-2"></div>
-          <img src="hero.jpg" alt="源形 - 創意作品示意" class="hero-img" />
+          <!-- 響應式 hero 圖：使用 picture 支援 webp 與 fallback -->
+        <div class="hero-img-wrapper" aria-hidden="true">
+        <picture>
+          <img src="hero.jpg" alt="源形 - 創意作品示意" class="hero-img" loading="lazy" />
+         </picture>
+         </div>
+
           <div class="card-body">
             <div class="tag small">Featured</div>
             <h3>從產品洞察出發的故事化企劃</h3>
