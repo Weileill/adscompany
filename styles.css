@@ -190,7 +190,6 @@ iframe, img, video, .card, .glass {
 /* ----------------- Responsive hero image wrapper ----------------- */
 .hero-img-wrapper {
   width: 100%;
-  /* 固定長寬比，確保手機/桌機裁切一致；改成 16/9 可視需求調整 */
   aspect-ratio: 16 / 9;
   overflow: hidden;
   border-radius: 12px;
@@ -295,7 +294,7 @@ body.is-loaded [data-anim] {
 .hero-img-wrapper img.hero-img {
   display: block !important;
   width: 100% !important;
-  height: 100% !important;
+  height: auto !important;
   object-fit: cover !important;
   object-position: center !important;
   visibility: visible !important;
