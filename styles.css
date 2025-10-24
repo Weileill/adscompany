@@ -280,3 +280,46 @@ body.is-loaded [data-anim] {
 @media (max-width: 780px) {
   body.is-loaded [data-anim] { animation-duration: 420ms; }
 }
+/* ====== HERO visibility & animation safety fixes ====== */
+
+/* Ensure hero image wrapper never collapses on mobile while animations run */
+.hero-img-wrapper {
+  min-height: 120px;           /* safety minimum to avoid collapse */
+  height: auto;               /* don't let inline height be 0 */
+  display: block;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Ensure the img itself remains visible and fills container */
+.hero-img-wrapper img.hero-img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Make sure animation finishes keep the element visible */
+body.is-loaded [data-anim] {
+  /* these are already animated, but ensure final state is kept */
+  animation-fill-mode: both !important;
+}
+
+/* After animations, force final visible state (safety) */
+[data-anim].anim-final {
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+}
+
+/* Prevent mouseleave handlers from removing transform on touch devices */
+@media (pointer: coarse) {
+  #heroCard { transition: transform .25s ease !important; }
+}
+
+/* Extra: prevent accidental horizontal overflow from orbs or glows */
+.gradient-glow::after { max-width: 220px !important; overflow: hidden !important; }
+.lightfield { pointer-events: none; }
