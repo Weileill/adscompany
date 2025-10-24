@@ -5,14 +5,19 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>源形廣告事務有限公司 — 洞察 · 精準 · 故事化行銷</title>
   <meta name="description" content="源形廣告事務有限公司 — 全方位數位傳播、內容行銷、社群及影音製作。" />
-  <meta property="og:title" content="源形廣告事務有限公司 — 洞察 · 精準 · 故事化行銷" />
-  <meta property="og:description" content="以內容為核心，結合分眾與影音策略，讓品牌在社群與廣告中被記住。" />
-  <meta property="og:image" content="og-image.jpg" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- ENTRY OVERLAY: 強化開場動畫（短暫遮罩） -->
+  <div id="entryOverlay" class="entry-overlay" aria-hidden="true">
+    <div class="entry-logo">
+      <div class="logo-mark">源形</div>
+      <div class="entry-title">源形廣告事務有限公司</div>
+    </div>
+  </div>
+
   <div class="lightfield" aria-hidden="true"></div>
 
   <header class="nav" role="banner">
@@ -37,7 +42,7 @@
     <section class="hero" id="hero" aria-labelledby="hero-title">
       <div class="hero-left">
         <div class="tag" data-anim="3">洞察 · 精準</div>
-        <h1 id="hero-title" class="hero-title" data-anim="4">洞察（INSIGHTFUL） <span class="dot"></span><br>×</span> 精準（TARGETED）</h1>
+        <h1 id="hero-title" class="hero-title" data-anim="4">洞察（INSIGHTFUL） <span class="dot">×</span> 精準（TARGETED）</h1>
         <p class="lead" data-anim="5">我們以內容為核心，結合分眾與影音策略，讓品牌在社群與廣告中被記住。</p>
 
         <div class="hero-actions" data-anim="6">
@@ -69,7 +74,6 @@
       <p class="muted" data-anim="10">點擊縮圖以載入並播放（lazy-play，減少初始載入）。</p>
 
       <div class="grid videos-grid" id="videosGrid">
-        <!-- 3 videos from PPT -->
         <div class="video-card" data-id="GcGAhuW5KNA" data-title="案例影片 A" data-anim="11">
           <div class="thumb"><img alt="影片 A" src="https://i.ytimg.com/vi/GcGAhuW5KNA/hqdefault.jpg" /><div class="play">▶</div></div>
           <div class="meta"><div class="title">案例影片 A</div><div class="desc muted">來源：簡報</div></div>
@@ -87,6 +91,7 @@
       </div>
     </section>
 
+    <!-- social / clients / contact (unchanged) -->
     <section id="socials" class="section two-col">
       <div>
         <h2 data-anim="14">粉專即時動態</h2>
@@ -104,6 +109,8 @@
         <h3>快速連結</h3>
         <ul class="links-list">
           <li><a href="https://www.facebook.com/JandMConnect/" target="_blank" rel="noopener noreferrer">Facebook 粉專</a></li>
+          <li><a href="https://www.instagram.com/yourpage" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+          <li><a href="https://www.linkedin.com/company/yourcompany" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
           <li><a href="https://www.youtube.com/@Michael-il3jj" target="_blank" rel="noopener noreferrer">YouTube</a></li>
         </ul>
       </aside>
@@ -126,7 +133,6 @@
     </section>
   </main>
 
-  <!-- mobile CTA bar -->
   <div class="mobile-cta" aria-hidden="false">
     <a href="https://www.facebook.com/JandMConnect/" target="_blank" rel="noopener noreferrer" class="m-cta">粉專</a>
     <a href="#videos" class="m-cta">影片</a>
@@ -138,6 +144,8 @@
       <div>© <span id="year"></span> 源形廣告事務有限公司</div>
       <div class="socials-small">
         <a href="https://www.facebook.com/JandMConnect/" target="_blank" rel="noopener noreferrer">Facebook</a>
+        <a href="https://www.instagram.com/yourpage" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.linkedin.com/company/yourcompany" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </div>
     </div>
   </footer>
