@@ -1,7 +1,25 @@
 document.addEventListener('DOMContentLoaded', function () {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isTouch = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window);
+  // --------------------------------------------------------
+  // INTERACTIVE GLASS SHEEN (滑鼠追蹤光澤)
+  // --------------------------------------------------------
+  const sheenElements = document.querySelectorAll('.hover-sheen, .video-card');
 
+  sheenElements.forEach(el => {
+    el.addEventListener('mousemove', (e) => {
+      // 取得元素的邊界與尺寸
+      const rect = el.getBoundingClientRect();
+      
+      // 計算滑鼠相對於該元素的 X, Y 座標
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // 更新 CSS 變數
+      el.style.setProperty('--mouse-x', `${x}px`);
+      el.style.setProperty('--mouse-y', `${y}px`);
+    });
+  });
   // ENTRY OVERLAY (if exists)
   const overlay = document.getElementById('entryOverlay');
   if (overlay && !prefersReduced) {

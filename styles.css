@@ -88,93 +88,71 @@ body {
   box-shadow: 0 0 25px rgba(124, 108, 240, 0.5);
 }
 
-/* ====== 核心：光澤動畫 (Premium Glass Sheen) ====== */
+/* ====== 核心：光澤動畫 (Interactive Real Glass) ====== */
 
-/* 基礎設定：任何需要光澤的元素都必須 relative 且 overflow hidden */
+/* 基礎設定 */
 .continuous-sheen, .hover-sheen, .video-card {
   position: relative;
   overflow: hidden !important;
+  /* 初始化變數，避免 JS 載入前報錯 */
+  --mouse-x: 50%;
+  --mouse-y: 50%;
 }
 
-/* 光澤偽元素 - 自然質感優化版 */
-.continuous-sheen::after,
+/* 1. Hero Card: 保持原本的「自動優雅掃光」 (因為使用者不會一直在上面滑動) */
+.continuous-sheen::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  mix-blend-mode: overlay;
+  background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.02) 40%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0.02) 60%, transparent 70%);
+  transform: translateX(-150%) skewX(-25deg);
+  animation: sheen-natural 7s ease-in-out infinite;
+  opacity: 0.8;
+}
+
+@keyframes sheen-natural {
+  0% { transform: translateX(-150%) skewX(-25deg); }
+  30% { transform: translateX(200%) skewX(-25deg); }
+  100% { transform: translateX(200%) skewX(-25deg); }
+}
+
+/* 2. 按鈕與影片卡片: 改為「跟隨滑鼠」的聚光燈效果 */
 .hover-sheen::after,
 .video-card::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  /* 使用 overlay 混合模式，讓光澤融入背景，而不是蓋在上面 */
-  mix-blend-mode: overlay;
-  /* 更自然的散射光漸層：中間亮，兩側極柔和 */
-  background: linear-gradient(
-    120deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.02) 40%,
-    rgba(255, 255, 255, 0.25) 50%,  /* 核心亮度 */
-    rgba(255, 255, 255, 0.02) 60%,
-    transparent 70%
-  );
-  transform: translateX(-150%) skewX(-25deg);
+  inset: 0;
   pointer-events: none;
   z-index: 2;
+  
+  /* 關鍵：混合模式讓光看起來像從內部透出來，而不是蓋在上面 */
+  mix-blend-mode: overlay; 
+  
+  /* 預設透明 (隱藏) */
+  opacity: 0;
+  
+  /* 製作一個「光暈聚光燈」，位置由 JS 的 --mouse-x/y 控制 */
+  background: radial-gradient(
+    600px circle at var(--mouse-x) var(--mouse-y),
+    rgba(255, 255, 255, 0.35), /* 中心最亮 */
+    rgba(255, 255, 255, 0.06) 40%, /* 擴散光暈 */
+    transparent 80%
+  );
+  
+  /* 移開時的動畫：優雅地淡出 (Fade Out) */
+  transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* --- Animation Definitions --- */
-
-/* 自然光澤：快速掃過後，有長時間的停頓，避免視覺疲勞 */
-@keyframes sheen-natural {
-  0% {
-    transform: translateX(-150%) skewX(-25deg);
-  }
-  30% {
-    /* 動畫前段完成掃光 */
-    transform: translateX(200%) skewX(-25deg);
-  }
-  100% {
-    /* 後段保持不動（停頓），製造呼吸感 */
-    transform: translateX(200%) skewX(-25deg);
-  }
+/* 滑鼠懸停時：顯示光澤 (Fade In) */
+.hover-sheen:hover::after,
+.video-card:hover::after {
+  opacity: 1;
+  /* 進場時稍微快一點，出發時慢一點，製造靈敏度 */
+  transition: opacity 0.2s ease-out;
 }
 
-/* 懸停光澤：快速且帶有物理慣性的滑動 */
-@keyframes sheen-hover {
-  0% {
-    transform: translateX(-150%) skewX(-25deg);
-  }
-  100% {
-    transform: translateX(200%) skewX(-25deg);
-  }
-}
-
-/* --- 應用動畫 --- */
-
-/* Hero Card: 持續但優雅的間歇性光澤 (7秒一循環) */
-.continuous-sheen::after {
-  animation: sheen-natural 7s ease-in-out infinite;
-  opacity: 0.8; /* 配合 mix-blend-mode 使用 */
-}
-
-/* 按鈕與卡片: 滑鼠懸停時才觸發 */
-.hover-sheen::after, .video-card::after {
-  animation: none; /* 預設不動 */
-  opacity: 0.9;
-}
-
-.hover-sheen:hover::after, .video-card:hover::after {
-  /* 使用 cubic-bezier 模擬真實光影速度：進入快，出去慢 */
-  animation: sheen-hover 1s cubic-bezier(0.4, 0.0, 0.2, 1) forwards;
-}
-
-/* 手機版優化：減少干擾 */
+/* 手機版：因為沒有 Hover，保持原本的自動掃光或降低效果 */
 @media (max-width: 768px) {
-  .continuous-sheen::after {
-    /* 手機上讓光澤動畫變慢，避免太搶眼 */
-    animation-duration: 10s;
-    opacity: 0.6;
-  }
+  .hover-sheen::after, .video-card::after { display: none; } /* 手機上為了效能與體驗，通常不開啟滑鼠追蹤 */
 }
 /* ========================================== */
 
