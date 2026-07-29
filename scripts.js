@@ -1,144 +1,171 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isTouch = window.matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window);
-  // ENTRY OVERLAY (if exists)
-  const overlay = document.getElementById('entryOverlay');
-  if (overlay && !prefersReduced) {
-    setTimeout(() => {
-      overlay.classList.add('hidden');
-      setTimeout(() => { if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 900);
-    }, 600);
-  } else if (overlay) {
-    overlay.remove();
+document.addEventListener('DOMContentLoaded', () => {
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const siteNav = document.getElementById('siteNav');
+  const progressBar = document.querySelector('.scroll-progress span');
+  const year = document.getElementById('year');
+
+  if (year) {
+    year.textContent = new Date().getFullYear();
   }
 
-  // Collect anim elements and apply stagger delays
-  const body = document.body;
-  const animEls = Array.from(document.querySelectorAll('[data-anim]'))
-    .sort((a,b) => Number(a.getAttribute('data-anim')) - Number(b.getAttribute('data-anim')));
+  // Scroll-linked navigation polish and progress indicator.
+  let scrollTicking = false;
 
-  if (prefersReduced) {
-    // show immediately without stagger
-    animEls.forEach(el => {
-      el.style.opacity = '1';
-      el.style.transform = 'none';
-      el.classList.add('anim-final');
-    });
-    body.classList.add('is-loaded');
+  const updateScrollUI = () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollRange = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = scrollRange > 0 ? Math.min(scrollTop / scrollRange, 1) : 0;
+
+    if (siteNav) {
+      siteNav.classList.toggle('is-scrolled', scrollTop > 18);
+    }
+
+    if (progressBar) {
+      progressBar.style.transform = `scaleX(${progress})`;
+    }
+
+    scrollTicking = false;
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!scrollTicking) {
+      window.requestAnimationFrame(updateScrollUI);
+      scrollTicking = true;
+    }
+  }, { passive: true });
+
+  updateScrollUI();
+
+  // Reveal content as it enters the viewport instead of delaying the whole page.
+  const revealItems = Array.from(document.querySelectorAll('[data-reveal]'));
+
+  if (reducedMotion || !('IntersectionObserver' in window)) {
+    revealItems.forEach((item) => item.classList.add('is-visible'));
   } else {
-    const baseStep = isTouch ? 40 : 95;
-    animEls.forEach((el, i) => {
-      const delay = i * baseStep;
-      el.style.setProperty('--anim-delay', `${delay}ms`);
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, {
+      rootMargin: '0px 0px -10% 0px',
+      threshold: 0.08
     });
 
-    // small timeout to wait for overlay fade
-    const startupDelay = overlay && !prefersReduced ? 300 : 80;
-    setTimeout(() => {
-      body.classList.add('is-loaded');
+    revealItems.forEach((item) => revealObserver.observe(item));
+  }
 
-      // after total stagger time + small buffer, mark elements final to avoid them reverting
-      const totalStagger = animEls.length * baseStep + 320; // safe buffer
-      setTimeout(() => {
-        animEls.forEach(el => {
-          // mark final, so CSS forced final properties apply
-          el.classList.add('anim-final');
-          // also explicitly set final inline styles to be extra safe
-          el.style.opacity = '1';
-          el.style.transform = 'none';
-          el.style.visibility = 'visible';
-          // remove any transition-delay custom to avoid future flicker
-          el.style.removeProperty('transition-delay');
-          el.style.removeProperty('--anim-delay');
-        });
+  // Highlight the navigation item that matches the section in view.
+  const navLinks = Array.from(document.querySelectorAll('.nav-link'));
+  const sectionIds = navLinks
+    .map((link) => link.getAttribute('href'))
+    .filter((href) => href && href.startsWith('#'));
+  const observedSections = sectionIds
+    .map((id) => document.querySelector(id))
+    .filter(Boolean);
 
-        // hero card bounce trigger (desktop) — if exists
-        const heroCard = document.getElementById('heroCard');
-        if (heroCard && !isTouch && !prefersReduced) {
-          heroCard.classList.add('body-animated');
-          // ensure it stays visible after animationend
-          heroCard.addEventListener('animationend', () => {
-            heroCard.classList.add('anim-final');
-            heroCard.style.transform = 'none';
-            heroCard.style.opacity = '1';
-            heroCard.style.visibility = 'visible';
-          }, { once: true });
+  if ('IntersectionObserver' in window && observedSections.length) {
+    const sectionObserver = new IntersectionObserver((entries) => {
+      const activeEntry = entries.find((entry) => entry.isIntersecting);
+      if (!activeEntry) return;
+
+      navLinks.forEach((link) => {
+        const isActive = link.getAttribute('href') === `#${activeEntry.target.id}`;
+        if (isActive) {
+          link.setAttribute('aria-current', 'true');
+        } else {
+          link.removeAttribute('aria-current');
         }
-      }, totalStagger);
-    }, startupDelay);
+      });
+    }, {
+      rootMargin: '-28% 0px -62% 0px',
+      threshold: 0
+    });
+
+    observedSections.forEach((section) => sectionObserver.observe(section));
   }
 
-  // LAZY-PLAY videos (unchanged logic but safe)
-  document.querySelectorAll('.video-card').forEach(card => {
-    card.addEventListener('click', function (e) {
-      e.preventDefault();
-      const id = this.dataset.id;
-      if (!id) return;
-      const iframe = document.createElement('iframe');
-      iframe.width = '100%'; iframe.height = '100%';
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-      iframe.allowFullscreen = true; iframe.loading = 'lazy';
-      iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`;
-      const thumb = this.querySelector('.thumb');
-      if (thumb) {
-        const wrapper = document.createElement('div');
-        wrapper.style.position = 'relative';
-        wrapper.style.paddingBottom = '56.25%';
-        wrapper.style.height = '0';
-        wrapper.appendChild(iframe);
-        iframe.style.position = 'absolute'; iframe.style.top = '0'; iframe.style.left = '0'; iframe.style.width = '100%'; iframe.style.height = '100%';
-        thumb.replaceWith(wrapper);
+  // Fall back gracefully when a YouTube video has no max-resolution thumbnail.
+  document.querySelectorAll('.video-frame img').forEach((image) => {
+    image.addEventListener('error', () => {
+      const maxRes = '/maxresdefault.jpg';
+      if (image.src.includes(maxRes)) {
+        image.src = image.src.replace(maxRes, '/hqdefault.jpg');
       }
-    });
+    }, { once: true });
   });
-// --------------------------------------------------------
-  // INTERACTIVE GLASS SHEEN (滑鼠追蹤光澤)
-  // --------------------------------------------------------
-  const sheenElements = document.querySelectorAll('.hover-sheen, .video-card');
 
-  sheenElements.forEach(el => {
-    el.addEventListener('mousemove', (e) => {
-      // 取得元素的邊界與尺寸
-      const rect = el.getBoundingClientRect();
-      
-      // 計算滑鼠相對於該元素的 X, Y 座標
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+  // Load YouTube only after a visitor chooses a case.
+  document.querySelectorAll('.video-trigger').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      const videoId = trigger.dataset.videoId;
+      const card = trigger.closest('.video-card');
+      if (!videoId || !card) return;
 
-      // 更新 CSS 變數
-      el.style.setProperty('--mouse-x', `${x}px`);
-      el.style.setProperty('--mouse-y', `${y}px`);
-    });
+      const playerFrame = document.createElement('div');
+      playerFrame.className = 'video-frame';
+
+      const iframe = document.createElement('iframe');
+      iframe.className = 'video-player';
+      iframe.title = trigger.getAttribute('aria-label') || 'YouTube 影片播放器';
+      iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&rel=0&modestbranding=1`;
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+
+      playerFrame.appendChild(iframe);
+      trigger.replaceWith(playerFrame);
+      card.classList.add('is-playing');
+
+      if (!reducedMotion) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, { once: true });
   });
-  // HERO PARALLAX — desktop only and non-blocking
-  const hero = document.getElementById('hero');
-  const heroCard = document.getElementById('heroCard');
-  if (hero && heroCard && !isTouch && !prefersReduced) {
-    hero.addEventListener('mousemove', (e) => {
-      const rect = hero.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      const tx = x * 8;
-      const ty = y * 8;
-      const rz = x * 3;
-      heroCard.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotateZ(${rz}deg)`;
-      heroCard.style.boxShadow = `0 ${12 - Math.abs(ty)}px ${30 - Math.abs(ty)}px rgba(11,15,30,0.09)`;
-    });
-    // only clear transform on mouseleave (desktop) — do not clear on touch devices
-    hero.addEventListener('mouseleave', () => {
-      heroCard.style.transform = '';
-      heroCard.style.boxShadow = '';
-    });
-  } else if (heroCard) {
-    // ensure touch/mobile doesn't get transforms cleared unexpectedly
-    heroCard.style.willChange = 'auto';
-    heroCard.style.transform = 'none';
-    heroCard.style.opacity = '1';
-    heroCard.style.visibility = 'visible';
-    heroCard.classList.add('anim-final');
+
+  // Pointer-responsive light and restrained logo tilt on capable devices.
+  if (finePointer && !reducedMotion) {
+    document.body.classList.add('has-pointer');
+
+    let pointerX = -500;
+    let pointerY = -500;
+    let pointerTicking = false;
+
+    const updatePointer = () => {
+      document.documentElement.style.setProperty('--cursor-x', `${pointerX}px`);
+      document.documentElement.style.setProperty('--cursor-y', `${pointerY}px`);
+      pointerTicking = false;
+    };
+
+    window.addEventListener('pointermove', (event) => {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+
+      if (!pointerTicking) {
+        window.requestAnimationFrame(updatePointer);
+        pointerTicking = true;
+      }
+    }, { passive: true });
+
+    const visual = document.querySelector('.hero-visual');
+    const brandStage = document.getElementById('brandStage');
+
+    if (visual && brandStage) {
+      visual.addEventListener('pointermove', (event) => {
+        const bounds = visual.getBoundingClientRect();
+        const xRatio = (event.clientX - bounds.left) / bounds.width - 0.5;
+        const yRatio = (event.clientY - bounds.top) / bounds.height - 0.5;
+
+        brandStage.style.setProperty('--stage-rx', `${yRatio * -6}deg`);
+        brandStage.style.setProperty('--stage-ry', `${xRatio * 8}deg`);
+      }, { passive: true });
+
+      visual.addEventListener('pointerleave', () => {
+        brandStage.style.setProperty('--stage-rx', '0deg');
+        brandStage.style.setProperty('--stage-ry', '0deg');
+      });
+    }
   }
-
-  // Footer year
-  const yearEl = document.getElementById('year');
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
 });

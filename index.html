@@ -3,167 +3,282 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>源形廣告事務有限公司 — 洞察 · 精準 · 故事化行銷</title>
-  <meta name="description" content="源形廣告事務有限公司 — 全方位數位傳播、內容行銷、社群及影音製作。" />
+  <title>源形廣告事務有限公司｜J&M Connection</title>
+  <meta name="description" content="源形廣告事務有限公司，以洞察、內容與精準分眾，打造讓品牌被看見、被記住的社群及影音行銷。" />
+  <meta name="theme-color" content="#0b0b09" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <noscript><style>.reveal{opacity:1!important;transform:none!important}</style></noscript>
 </head>
 <body>
-  <div class="noise-overlay"></div>
+  <a class="skip-link" href="#main-content">跳到主要內容</a>
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+  <div class="noise-overlay" aria-hidden="true"></div>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+  <div class="cursor-glow" aria-hidden="true"></div>
 
-  <div class="lightfield" aria-hidden="true"></div>
-
-  <header class="nav" role="banner">
+  <header class="nav" id="siteNav">
     <div class="nav-inner">
-      <div class="brand" data-anim="0">
-        <div class="logo">J&M</div>
-        <div class="brand-info">
-          <div class="brand-name gradient-text" data-anim="1">源形廣告</div>
-        </div>
-      </div>
-      <nav class="links" role="navigation" aria-label="主選單" data-anim="2">
+      <a class="brand" href="#hero" aria-label="源形廣告首頁">
+        <span class="brand-mark">J<span>&amp;</span>M</span>
+        <span class="brand-copy">
+          <strong>源形廣告</strong>
+          <small>J&amp;M CONNECTION</small>
+        </span>
+      </a>
+
+      <nav class="links" aria-label="主選單">
         <div class="desktop-links">
-          <a href="#videos">影片</a>
-          <a href="#clients">客戶</a>
-          <a href="#contact">聯絡</a>
+          <a class="nav-link" href="#videos">作品</a>
+          <a class="nav-link" href="#socials">動態</a>
+          <a class="nav-link" href="#clients">團隊</a>
+          <a class="nav-link" href="#contact">聯絡</a>
         </div>
-        <a class="btn-glow hover-sheen" href="https://www.facebook.com/JandMConnect/" id="fb-cta" target="_blank" rel="noopener noreferrer">
-          <span>粉專</span>
+        <a class="nav-social interactive-link" href="https://www.facebook.com/JandMConnect/" target="_blank" rel="noopener noreferrer">
+          <span>Facebook</span>
+          <span aria-hidden="true">↗</span>
         </a>
       </nav>
     </div>
   </header>
 
-  <main>
+  <main id="main-content">
     <section class="hero" id="hero" aria-labelledby="hero-title">
-      <div class="hero-content-wrapper">
-        <div class="hero-left">
-          <div class="tag-pill" data-anim="3">洞察 Insightful · 精準 Targeted</div>
-          <h1 id="hero-title" class="hero-title" data-anim="4">
-            洞察與精準的<br>
-            <span class="gradient-text-hero">故事化行銷策略</span>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow reveal" data-reveal>
+            <span class="eyebrow-dot" aria-hidden="true"></span>
+            Creative strategy / Content / Film
+          </p>
+
+          <h1 id="hero-title" class="hero-title reveal" data-reveal>
+            讓品牌，
+            <span>被看見</span>
+            也被記住。
           </h1>
-          <p class="lead" data-anim="5">我們以內容為核心，結合精準分眾與高質感的影音策略，讓品牌在社群時代被記住。</p>
 
-          <div class="hero-actions" data-anim="6">
-            <a class="cta primary hover-sheen" href="#videos">觀看影片作品</a>
-            <a class="cta secondary" href="https://www.youtube.com/@Michael-il3jj" target="_blank" rel="noopener noreferrer">YouTube 頻道</a>
+          <p class="hero-lead reveal" data-reveal>
+            我們以內容為核心，結合精準分眾與高質感的影音策略，
+            讓品牌在社群時代留下真正有感的印象。
+          </p>
+
+          <div class="hero-actions reveal" data-reveal>
+            <a class="cta cta-primary interactive-link" href="#videos">
+              <span>觀看影片作品</span>
+              <span class="cta-icon" aria-hidden="true">↓</span>
+            </a>
+            <a class="cta cta-ghost interactive-link" href="https://www.youtube.com/@Michael-il3jj" target="_blank" rel="noopener noreferrer">
+              <span>YouTube 頻道</span>
+              <span class="cta-icon" aria-hidden="true">↗</span>
+            </a>
           </div>
 
-          <div class="clients-row" data-anim="7">
-            <span class="client-label">Trusted by</span>
-            <span class="client-list">利百代 · 飛利浦 · 保麗淨 · 舒酸定 · 賀寶芙 · 普拿疼</span>
+          <div class="hero-proof reveal" data-reveal>
+            <span class="proof-label">Selected clients</span>
+            <p>利百代 · 飛利浦 · 保麗淨 · 舒酸定 · 賀寶芙 · 普拿疼</p>
           </div>
         </div>
 
-        <div class="hero-right">
-          <div class="card glass-panel floating continuous-sheen" id="heroCard" data-anim="8" aria-hidden="true">
-            <div class="hero-img-wrapper">
-              <img src="hero.jpg" alt="源形 J&M Connection" class="hero-img" loading="lazy" />
+        <div class="hero-visual reveal" data-reveal>
+          <div class="visual-orbit orbit-one" aria-hidden="true"></div>
+          <div class="visual-orbit orbit-two" aria-hidden="true"></div>
+          <div class="brand-stage" id="brandStage">
+            <span class="stage-index" aria-hidden="true">01</span>
+            <div class="logo-frame">
+              <img src="hero.jpg" alt="J&M Connection 源形廣告事務有限公司標誌" class="hero-img" />
             </div>
-            <div class="card-body">
-              <div class="card-meta">
-                <span class="tag small">Featured</span>
-                <span class="date">Creative Agency</span>
+            <div class="stage-caption">
+              <span>Insightful</span>
+              <span class="caption-line" aria-hidden="true"></span>
+              <span>Targeted</span>
+            </div>
+          </div>
+          <div class="floating-note note-top" aria-hidden="true">IDEA → IMPACT</div>
+          <div class="floating-note note-bottom" aria-hidden="true">TAIPEI / TAIWAN</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>INSIGHT</span><i>✦</i><span>CONTENT</span><i>✦</i><span>CREATIVE</span><i>✦</i><span>SOCIAL</span><i>✦</i><span>FILM</span><i>✦</i>
+        <span>INSIGHT</span><i>✦</i><span>CONTENT</span><i>✦</i><span>CREATIVE</span><i>✦</i><span>SOCIAL</span><i>✦</i><span>FILM</span><i>✦</i>
+      </div>
+    </div>
+
+    <section id="videos" class="section work-section" aria-labelledby="work-title">
+      <div class="section-heading reveal" data-reveal>
+        <div>
+          <span class="section-number">01</span>
+          <p class="section-kicker">Selected work</p>
+        </div>
+        <div class="section-heading-copy">
+          <h2 id="work-title">用影像，讓想法<br>開始被傳遞。</h2>
+          <p>點擊案例直接播放，感受我們如何把品牌訊息轉化成能被觀看的故事。</p>
+        </div>
+      </div>
+
+      <div class="videos-grid" id="videosGrid">
+        <article class="video-card reveal" data-reveal>
+          <button class="video-trigger" type="button" data-video-id="GcGAhuW5KNA" aria-label="播放案例影片 A">
+            <span class="video-frame">
+              <img alt="案例影片 A 縮圖" src="https://i.ytimg.com/vi/GcGAhuW5KNA/maxresdefault.jpg" loading="lazy" />
+              <span class="video-shade" aria-hidden="true"></span>
+              <span class="play-button" aria-hidden="true"><span></span></span>
+              <span class="video-index" aria-hidden="true">01</span>
+            </span>
+          </button>
+          <div class="video-meta">
+            <div><span>Creative film</span><h3>案例影片 A</h3></div>
+            <span class="case-arrow" aria-hidden="true">↗</span>
+          </div>
+        </article>
+
+        <article class="video-card reveal" data-reveal>
+          <button class="video-trigger" type="button" data-video-id="xCGJ1HqoHDs" aria-label="播放案例影片 B">
+            <span class="video-frame">
+              <img alt="案例影片 B 縮圖" src="https://i.ytimg.com/vi/xCGJ1HqoHDs/maxresdefault.jpg" loading="lazy" />
+              <span class="video-shade" aria-hidden="true"></span>
+              <span class="play-button" aria-hidden="true"><span></span></span>
+              <span class="video-index" aria-hidden="true">02</span>
+            </span>
+          </button>
+          <div class="video-meta">
+            <div><span>Brand story</span><h3>案例影片 B</h3></div>
+            <span class="case-arrow" aria-hidden="true">↗</span>
+          </div>
+        </article>
+
+        <article class="video-card reveal" data-reveal>
+          <button class="video-trigger" type="button" data-video-id="-Ki7EgzUcD8" aria-label="播放案例影片 C">
+            <span class="video-frame">
+              <img alt="案例影片 C 縮圖" src="https://i.ytimg.com/vi/-Ki7EgzUcD8/maxresdefault.jpg" loading="lazy" />
+              <span class="video-shade" aria-hidden="true"></span>
+              <span class="play-button" aria-hidden="true"><span></span></span>
+              <span class="video-index" aria-hidden="true">03</span>
+            </span>
+          </button>
+          <div class="video-meta">
+            <div><span>Social content</span><h3>案例影片 C</h3></div>
+            <span class="case-arrow" aria-hidden="true">↗</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="socials" class="section social-section" aria-labelledby="social-title">
+      <div class="social-grid">
+        <div class="social-copy reveal" data-reveal>
+          <span class="section-number">02</span>
+          <p class="section-kicker">Stay current</p>
+          <h2 id="social-title">創意不停在<br>提案結束之後。</h2>
+          <p class="social-intro">關注我們的 Facebook 粉絲專頁，查看近期動態與更多內容。</p>
+
+          <div class="social-links">
+            <a class="social-link interactive-link" href="https://www.facebook.com/JandMConnect/" target="_blank" rel="noopener noreferrer">
+              <span><small>Follow us</small>Facebook 粉專</span>
+              <strong aria-hidden="true">↗</strong>
+            </a>
+            <a class="social-link interactive-link" href="https://www.youtube.com/@Michael-il3jj" target="_blank" rel="noopener noreferrer">
+              <span><small>Watch more</small>YouTube 頻道</span>
+              <strong aria-hidden="true">↗</strong>
+            </a>
+          </div>
+        </div>
+
+        <div class="facebook-shell reveal" data-reveal>
+          <div class="embed-topbar">
+            <span><i aria-hidden="true"></i> Live feed</span>
+            <span>J&amp;M Connection</span>
+          </div>
+          <div class="facebook-frame">
+            <iframe
+              id="fb-iframe"
+              title="J&M Connection Facebook 粉絲專頁"
+              src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FJandMConnect%2F&tabs=timeline&width=500&height=560&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true"
+              width="500"
+              height="560"
+              scrolling="no"
+              loading="lazy"
+              allowtransparency="true"
+              allow="encrypted-media">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="clients" class="section people-section" aria-labelledby="people-title">
+      <div class="section-heading reveal" data-reveal>
+        <div>
+          <span class="section-number">03</span>
+          <p class="section-kicker">People &amp; partners</p>
+        </div>
+        <div class="section-heading-copy">
+          <h2 id="people-title">好的創意，來自<br>彼此相信。</h2>
+        </div>
+      </div>
+
+      <div class="people-grid">
+        <article class="client-panel reveal" data-reveal>
+          <span class="panel-label">Representative clients</span>
+          <h3>與不同領域的品牌，<br>一起創造有感溝通。</h3>
+          <div class="client-cloud" aria-label="代表客戶">
+            <span>利百代</span>
+            <span>飛利浦</span>
+            <span>保麗淨</span>
+            <span>舒酸定</span>
+            <span>賀寶芙</span>
+            <span>普拿疼</span>
+          </div>
+        </article>
+
+        <article class="team-panel reveal" data-reveal>
+          <span class="panel-label">Core team</span>
+          <div class="team-list">
+            <div class="team-member">
+              <span class="member-index">01</span>
+              <div>
+                <h3>牟淑蕙 <small>Jasmine Mou</small></h3>
+                <p>企劃策略總監 / 負責人</p>
               </div>
-              <h3>視覺導向的社群廣告</h3>
-              <p class="muted">提升品牌好感度與互動率的關鍵。</p>
+            </div>
+            <div class="team-member">
+              <span class="member-index">02</span>
+              <div>
+                <h3>胡書源 <small>Michael Hu</small></h3>
+                <p>創意總監</p>
+              </div>
             </div>
           </div>
-        </div>
+        </article>
       </div>
     </section>
 
-    <section id="videos" class="section">
-      <div class="section-header">
-        <h2 data-anim="9">精選影片案例</h2>
-        <p class="muted" data-anim="10">點擊縮圖播放，體驗我們的視覺敘事能力。</p>
-      </div>
+    <section id="contact" class="section contact-section" aria-labelledby="contact-title">
+      <div class="contact-panel reveal" data-reveal>
+        <div class="contact-intro">
+          <span class="section-number">04</span>
+          <p class="section-kicker">Start a project</p>
+          <h2 id="contact-title">下一個好故事，<br><em>從一場對話開始。</em></h2>
+        </div>
 
-      <div class="grid videos-grid" id="videosGrid">
-        <div class="video-card hover-sheen" data-id="GcGAhuW5KNA" data-anim="11">
-          <div class="thumb-wrapper">
-            <img alt="案例影片 A" src="https://i.ytimg.com/vi/GcGAhuW5KNA/maxresdefault.jpg" loading="lazy" />
-            <div class="play-btn-overlay"><div class="play-icon"></div></div>
+        <div class="contact-list">
+          <div class="contact-row">
+            <span>聯絡人</span>
+            <strong>牟淑蕙 Jasmine Mou</strong>
           </div>
-          <div class="meta"><div class="video-title">案例影片 A</div><div class="video-desc">廣告影片</div></div>
-        </div>
-
-        <div class="video-card hover-sheen" data-id="xCGJ1HqoHDs" data-anim="12">
-          <div class="thumb-wrapper">
-            <img alt="案例影片 B" src="https://i.ytimg.com/vi/xCGJ1HqoHDs/maxresdefault.jpg" loading="lazy" />
-            <div class="play-btn-overlay"><div class="play-icon"></div></div>
-          </div>
-          <div class="meta"><div class="video-title">案例影片 B</div><div class="video-desc">廣告影片</div></div>
-        </div>
-
-        <div class="video-card hover-sheen" data-id="-Ki7EgzUcD8" data-anim="13">
-          <div class="thumb-wrapper">
-            <img alt="案例影片 C" src="https://i.ytimg.com/vi/-Ki7EgzUcD8/maxresdefault.jpg" loading="lazy" />
-            <div class="play-btn-overlay"><div class="play-icon"></div></div>
-          </div>
-          <div class="meta"><div class="video-title">案例影片 C</div><div class="video-desc">廣告影片</div></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="socials" class="section two-col-section">
-      <div class="col-left">
-        <h2 data-anim="14">社群動態</h2>
-        <p class="muted" data-anim="15">關注我們的 Facebook 粉絲專頁。</p>
-        <div class="fb-container glass-panel continuous-sheen" data-anim="16">
-          <iframe id="fb-iframe"
-            title="Facebook Page"
-            src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FJandMConnect%2F&tabs=timeline&width=500&height=500&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true"
-            width="100%" height="400" scrolling="no" loading="lazy" allowtransparency="true" allow="encrypted-media"></iframe>
-        </div>
-      </div>
-
-      <div class="col-right" data-anim="17">
-        <div class="info-box glass-panel hover-sheen">
-          <h3>快速連結</h3>
-          <ul class="links-list">
-            <li><a href="https://www.facebook.com/JandMConnect/" target="_blank">Facebook 粉專 <span class="arrow">↗</span></a></li>
-            <li><a href="https://www.youtube.com/@Michael-il3jj" target="_blank">YouTube 頻道 <span class="arrow">↗</span></a></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section id="clients" class="section">
-      <div class="section-header">
-        <h2 data-anim="18">客戶與團隊</h2>
-      </div>
-
-      <div class="card-grid" data-anim="20">
-        <div class="card glass-panel hover-sheen">
-          <div class="card-icon">🤝</div>
-          <h4>代表客戶</h4>
-          <p class="muted leading-relaxed">利百代 · 飛利浦 · 保麗淨 · 舒酸定 · 賀寶芙 · 普拿疼</p>
-        </div>
-        <div class="card glass-panel hover-sheen">
-          <div class="card-icon">💎</div>
-          <h4>核心團隊</h4>
-          <div class="team-member">
-            <strong>牟淑蕙 (Jasmine Mou)</strong><span>企劃策略總監 / 負責人</span>
-          </div>
-          <div class="team-member">
-            <strong>胡書源 (Michael Hu)</strong><span>創意總監</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="contact" class="section centered-text">
-      <div class="glass-panel contact-panel continuous-sheen" data-anim="21">
-        <h2>聯絡我們</h2>
-        <p class="muted">準備好開始下一個專案了嗎？</p>
-        <div class="contact-details" data-anim="23">
-          <div class="contact-item"><span class="label">聯絡人</span><span class="value">牟淑蕙 Jasmine Mou</span></div>
-          <div class="contact-item"><span class="label">電話</span><a href="tel:0912266042" class="value highlight">0912-266-042</a></div>
-          <div class="contact-item"><span class="label">Email</span><a href="mailto:jasmine.mou@j-m.com.tw" class="value link">jasmine.mou@j-m.com.tw</a></div>
+          <a class="contact-row interactive-link" href="tel:0912266042">
+            <span>電話</span>
+            <strong>0912-266-042 <i aria-hidden="true">↗</i></strong>
+          </a>
+          <a class="contact-row interactive-link" href="mailto:jasmine.mou@j-m.com.tw">
+            <span>Email</span>
+            <strong>jasmine.mou@j-m.com.tw <i aria-hidden="true">↗</i></strong>
+          </a>
         </div>
       </div>
     </section>
@@ -171,10 +286,14 @@
 
   <footer class="footer">
     <div class="footer-inner">
-      <div class="copyright">© <span id="year"></span> 源形廣告事务有限公司 J&M Connection</div>
+      <div class="footer-brand">
+        <span class="brand-mark">J<span>&amp;</span>M</span>
+        <p>源形廣告事務有限公司<br><small>J&amp;M CONNECTION</small></p>
+      </div>
+      <p class="copyright">© <span id="year"></span> J&amp;M Connection. All rights reserved.</p>
       <div class="footer-links">
-        <a href="https://www.facebook.com/JandMConnect/" target="_blank">FB</a>
-        <a href="https://www.youtube.com/@Michael-il3jj" target="_blank">YT</a>
+        <a href="https://www.facebook.com/JandMConnect/" target="_blank" rel="noopener noreferrer">Facebook ↗</a>
+        <a href="https://www.youtube.com/@Michael-il3jj" target="_blank" rel="noopener noreferrer">YouTube ↗</a>
       </div>
     </div>
   </footer>
