@@ -138,6 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (trigger) trigger.hidden = false;
 
     card.classList.remove('is-playing');
+    card.closest('.case-stack-item')?.classList.remove('has-active-player');
 
     if (activeCase === card) {
       activeCase = null;
@@ -177,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     trigger.hidden = true;
     player.hidden = false;
     card.classList.add('is-playing');
+    card.closest('.case-stack-item')?.classList.add('has-active-player');
     activeCase = card;
 
     if (videoStatus) {

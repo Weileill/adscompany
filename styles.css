@@ -749,6 +749,10 @@ dd {
   scroll-margin-top: calc(var(--header-h) + 30px);
 }
 
+.case-stack-item.has-active-player {
+  z-index: 50;
+}
+
 .case-stack-item:nth-child(1) .case-card {
   transform: rotate(-.18deg);
 }
@@ -1558,8 +1562,10 @@ a.contact-row:hover {
     gap: 0;
     height: calc(100svh - var(--header-h));
     padding: 18px var(--gutter) 28px;
+    overflow-y: auto;
     border-top: 1px solid var(--line);
     background: rgba(13, 12, 11, .98);
+    overscroll-behavior: contain;
     align-content: start;
     transform: translateY(-112%);
     visibility: hidden;
@@ -1847,6 +1853,11 @@ a.contact-row:hover {
 
   .case-media {
     min-height: 0;
+  }
+
+  .case-card.is-playing .case-media {
+    min-height: 200px;
+    aspect-ratio: auto;
   }
 
   .case-play {
