@@ -1,15 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  const siteNav = document.getElementById('siteNav');
+  const siteHeader = document.getElementById('siteHeader');
   const progressBar = document.querySelector('.scroll-progress span');
+  const menuToggle = document.getElementById('menuToggle');
+  const primaryNav = document.getElementById('primaryNav');
   const year = document.getElementById('year');
 
   if (year) {
     year.textContent = new Date().getFullYear();
   }
 
-  // Scroll-linked navigation polish and progress indicator.
+  // Keep the header state and reading progress tied to the page position.
   let scrollTicking = false;
 
   const updateScrollUI = () => {
@@ -17,9 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrollRange = document.documentElement.scrollHeight - window.innerHeight;
     const progress = scrollRange > 0 ? Math.min(scrollTop / scrollRange, 1) : 0;
 
-    if (siteNav) {
-      siteNav.classList.toggle('is-scrolled', scrollTop > 18);
-    }
+    siteHeader?.classList.toggle('is-scrolled', scrollTop > 12);
 
     if (progressBar) {
       progressBar.style.transform = `scaleX(${progress})`;
@@ -29,15 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.addEventListener('scroll', () => {
-    if (!scrollTicking) {
-      window.requestAnimationFrame(updateScrollUI);
-      scrollTicking = true;
-    }
+    if (scrollTicking) return;
+    window.requestAnimationFrame(updateScrollUI);
+    scrollTicking = true;
   }, { passive: true });
 
   updateScrollUI();
 
-  // Reveal content as it enters the viewport instead of delaying the whole page.
+  // Reveal content only when it becomes relevant to the viewport.
   const revealItems = Array.from(document.querySelectorAll('[data-reveal]'));
 
   if (reducedMotion || !('IntersectionObserver' in window)) {
@@ -50,122 +48,192 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.unobserve(entry.target);
       });
     }, {
-      rootMargin: '0px 0px -10% 0px',
+      rootMargin: '0px 0px -8% 0px',
       threshold: 0.08
     });
 
     revealItems.forEach((item) => revealObserver.observe(item));
   }
 
-  // Highlight the navigation item that matches the section in view.
+  // Never leave content hidden if a browser interrupts reveal observation.
+  window.setTimeout(() => {
+    revealItems.forEach((item) => item.classList.add('is-visible'));
+  }, 2400);
+
+  // Mobile navigation remains keyboard- and escape-key accessible.
+  const setMenuState = (open, returnFocus = false) => {
+    document.body.classList.toggle('nav-open', open);
+    menuToggle?.setAttribute('aria-expanded', String(open));
+
+    if (!open && returnFocus) {
+      menuToggle?.focus();
+    }
+  };
+
+  menuToggle?.addEventListener('click', () => {
+    const isOpen = menuToggle.getAttribute('aria-expanded') === 'true';
+    setMenuState(!isOpen);
+  });
+
+  primaryNav?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => setMenuState(false));
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 840) {
+      setMenuState(false);
+    }
+  }, { passive: true });
+
+  // Indicate the section currently crossing the reading line.
   const navLinks = Array.from(document.querySelectorAll('.nav-link'));
-  const sectionIds = navLinks
-    .map((link) => link.getAttribute('href'))
-    .filter((href) => href && href.startsWith('#'));
-  const observedSections = sectionIds
-    .map((id) => document.querySelector(id))
+  const navSections = navLinks
+    .map((link) => document.querySelector(link.getAttribute('href')))
     .filter(Boolean);
 
-  if ('IntersectionObserver' in window && observedSections.length) {
+  if ('IntersectionObserver' in window && navSections.length) {
     const sectionObserver = new IntersectionObserver((entries) => {
       const activeEntry = entries.find((entry) => entry.isIntersecting);
       if (!activeEntry) return;
 
       navLinks.forEach((link) => {
-        const isActive = link.getAttribute('href') === `#${activeEntry.target.id}`;
-        if (isActive) {
+        const active = link.getAttribute('href') === `#${activeEntry.target.id}`;
+        if (active) {
           link.setAttribute('aria-current', 'true');
         } else {
           link.removeAttribute('aria-current');
         }
       });
     }, {
-      rootMargin: '-28% 0px -62% 0px',
+      rootMargin: '-32% 0px -60% 0px',
       threshold: 0
     });
 
-    observedSections.forEach((section) => sectionObserver.observe(section));
+    navSections.forEach((section) => sectionObserver.observe(section));
   }
 
-  // Fall back gracefully when a YouTube video has no max-resolution thumbnail.
-  document.querySelectorAll('.video-frame img').forEach((image) => {
+  // Use a smaller YouTube thumbnail when max resolution is unavailable.
+  document.querySelectorAll('.case-trigger img, .hero-frame img').forEach((image) => {
     image.addEventListener('error', () => {
-      const maxRes = '/maxresdefault.jpg';
-      if (image.src.includes(maxRes)) {
-        image.src = image.src.replace(maxRes, '/hqdefault.jpg');
+      if (image.src.includes('/maxresdefault.jpg')) {
+        image.src = image.src.replace('/maxresdefault.jpg', '/hqdefault.jpg');
       }
     }, { once: true });
   });
 
-  // Load YouTube only after a visitor chooses a case.
-  document.querySelectorAll('.video-trigger').forEach((trigger) => {
-    trigger.addEventListener('click', () => {
-      const videoId = trigger.dataset.videoId;
-      const card = trigger.closest('.video-card');
-      if (!videoId || !card) return;
+  // The film deck keeps only one privacy-enhanced YouTube player alive.
+  const caseStack = document.querySelector('[data-case-stack]');
+  const videoStatus = document.querySelector('[data-video-status]');
+  let activeCase = null;
 
-      const playerFrame = document.createElement('div');
-      playerFrame.className = 'video-frame';
+  const closePlayer = (card, returnFocus = true) => {
+    if (!card) return;
 
-      const iframe = document.createElement('iframe');
-      iframe.className = 'video-player';
-      iframe.title = trigger.getAttribute('aria-label') || 'YouTube 影片播放器';
-      iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&rel=0&modestbranding=1`;
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-      iframe.allowFullscreen = true;
-      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+    const trigger = card.querySelector('.case-trigger');
+    const player = card.querySelector('[data-player]');
+    const mount = card.querySelector('.player-mount');
 
-      playerFrame.appendChild(iframe);
-      trigger.replaceWith(playerFrame);
-      card.classList.add('is-playing');
+    if (mount) mount.replaceChildren();
+    if (player) player.hidden = true;
+    if (trigger) trigger.hidden = false;
 
-      if (!reducedMotion) {
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }, { once: true });
-  });
+    card.classList.remove('is-playing');
 
-  // Pointer-responsive light and restrained logo tilt on capable devices.
-  if (finePointer && !reducedMotion) {
-    document.body.classList.add('has-pointer');
-
-    let pointerX = -500;
-    let pointerY = -500;
-    let pointerTicking = false;
-
-    const updatePointer = () => {
-      document.documentElement.style.setProperty('--cursor-x', `${pointerX}px`);
-      document.documentElement.style.setProperty('--cursor-y', `${pointerY}px`);
-      pointerTicking = false;
-    };
-
-    window.addEventListener('pointermove', (event) => {
-      pointerX = event.clientX;
-      pointerY = event.clientY;
-
-      if (!pointerTicking) {
-        window.requestAnimationFrame(updatePointer);
-        pointerTicking = true;
-      }
-    }, { passive: true });
-
-    const visual = document.querySelector('.hero-visual');
-    const brandStage = document.getElementById('brandStage');
-
-    if (visual && brandStage) {
-      visual.addEventListener('pointermove', (event) => {
-        const bounds = visual.getBoundingClientRect();
-        const xRatio = (event.clientX - bounds.left) / bounds.width - 0.5;
-        const yRatio = (event.clientY - bounds.top) / bounds.height - 0.5;
-
-        brandStage.style.setProperty('--stage-rx', `${yRatio * -6}deg`);
-        brandStage.style.setProperty('--stage-ry', `${xRatio * 8}deg`);
-      }, { passive: true });
-
-      visual.addEventListener('pointerleave', () => {
-        brandStage.style.setProperty('--stage-rx', '0deg');
-        brandStage.style.setProperty('--stage-ry', '0deg');
-      });
+    if (activeCase === card) {
+      activeCase = null;
     }
+
+    if (videoStatus) {
+      videoStatus.textContent = '影片已關閉';
+    }
+
+    if (returnFocus) {
+      trigger?.focus();
+    }
+  };
+
+  const openPlayer = (trigger) => {
+    const card = trigger.closest('.case-card');
+    const player = card?.querySelector('[data-player]');
+    const mount = card?.querySelector('.player-mount');
+    const videoId = trigger.dataset.videoId;
+
+    if (!card || !player || !mount || !videoId) return;
+
+    if (activeCase && activeCase !== card) {
+      closePlayer(activeCase, false);
+    }
+
+    const iframe = document.createElement('iframe');
+    iframe.className = 'video-player';
+    iframe.title = trigger.getAttribute('aria-label') || 'YouTube 影片播放器';
+    iframe.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&playsinline=1&rel=0`;
+    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    iframe.allowFullscreen = true;
+    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+    iframe.tabIndex = 0;
+
+    mount.replaceChildren(iframe);
+    trigger.hidden = true;
+    player.hidden = false;
+    card.classList.add('is-playing');
+    activeCase = card;
+
+    if (videoStatus) {
+      videoStatus.textContent = `${iframe.title}已開啟`;
+    }
+
+    window.requestAnimationFrame(() => iframe.focus());
+  };
+
+  caseStack?.addEventListener('click', (event) => {
+    const trigger = event.target.closest('.case-trigger');
+    const closeButton = event.target.closest('[data-close-player]');
+
+    if (trigger && caseStack.contains(trigger)) {
+      openPlayer(trigger);
+      return;
+    }
+
+    if (closeButton && caseStack.contains(closeButton)) {
+      closePlayer(closeButton.closest('.case-card'));
+    }
+  });
+
+  // Subtle depth state for the sticky stack, with no scroll hijacking.
+  if ('IntersectionObserver' in window && !reducedMotion) {
+    const caseObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle('is-in-view', entry.isIntersecting);
+      });
+    }, {
+      rootMargin: '-14% 0px -24% 0px',
+      threshold: 0.24
+    });
+
+    document.querySelectorAll('.case-stack-item').forEach((item) => caseObserver.observe(item));
   }
+
+  // Preserve the Facebook feed while loading its heavy iframe only on request.
+  const socialFeed = document.getElementById('socialFeed');
+  const facebookFrame = document.getElementById('fb-iframe');
+
+  socialFeed?.addEventListener('toggle', () => {
+    if (socialFeed.open && facebookFrame && !facebookFrame.src) {
+      facebookFrame.src = facebookFrame.dataset.src;
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+
+    if (document.body.classList.contains('nav-open')) {
+      setMenuState(false, true);
+      return;
+    }
+
+    if (activeCase) {
+      closePlayer(activeCase);
+    }
+  });
 });
